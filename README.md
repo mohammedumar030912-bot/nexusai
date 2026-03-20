@@ -1,0 +1,2 @@
+# nexusai
+AI Automation Project
