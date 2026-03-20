@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>NexusAI — Automate Everything</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --black: #0a0a0a;
+    --white: #f5f3ef;
+    --cream: #ede9e2;
+    --accent: #c8ff00;
+    --accent-dim: #a8d800;
+    --muted: #8a8780;
+    --border: rgba(255,255,255,0.1);
+    --card: rgba(255,255,255,0.04);
+    --radius: 14px;
+  }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+  }
+  section, nav, footer { position: relative; z-index: 1; }
+
+  /* NAV */
+  nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 22px 48px;
+    border-bottom: 1px solid var(--border);
+    position: sticky; top: 0; z-index: 100;
+    backdrop-filter: blur(20px);
+    background: rgba(10,10,10,0.85);
+  }
+  .logo {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px; font-weight: 800;
+    letter-spacing: -0.5px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .logo-dot {
+    width: 10px; height: 10px;
+    background: var(--accent); border-radius: 50%;
+    display: inline-block;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(200,255,0,0.4); }
+    50% { box-shadow: 0 0 0 8px rgba(200,255,0,0); }
+  }
+  .nav-links { display: flex; gap: 32px; align-items: center; }
+  .nav-links a { color: var(--muted); text-decoration: none; font-size: 14px; transition: color .2s; }
+  .nav-links a:hover { color: var(--white); }
+  .nav-cta {
+    background: var(--accent); color: var(--black);
+    border: none; padding: 10px 22px; border-radius: 100px;
+    font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500;
+    cursor: pointer; transition: all .2s;
+  }
+  .nav-cta:hover { background: var(--accent-dim); transform: translateY(-1px); }
+
+  /* HERO */
+  .hero {
+    min-height: 88vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center;
+    padding: 80px 24px 60px;
+    position: relative;
+  }
+  .hero-glow {
+    position: absolute; top: -120px; left: 50%; transform: translateX(-50%);
+    width: 700px; height: 700px;
+    background: radial-gradient(ellipse at center, rgba(200,255,0,0.09) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .badge {
+    display: inline-flex; align-items: center; gap: 7px;
+    background: rgba(200,255,0,0.1);
+    border: 1px solid rgba(200,255,0,0.25);
+    color: var(--accent); font-size: 12px; font-weight: 500;
+    padding: 6px 14px; border-radius: 100px;
+    margin-bottom: 36px; letter-spacing: 0.5px; text-transform: uppercase;
+  }
+  .badge-dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; }
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(46px, 8vw, 88px);
+    font-weight: 800; line-height: 1.0;
+    letter-spacing: -2px; max-width: 900px; margin-bottom: 28px;
+  }
+  h1 em { font-style: normal; color: var(--accent); }
+  .hero-sub {
+    font-size: clamp(16px, 2vw, 19px);
+    color: var(--muted); max-width: 560px;
+    margin-bottom: 52px; font-weight: 300; line-height: 1.7;
+  }
+
+  /* WAITLIST FORM */
+  .waitlist-wrap { width: 100%; max-width: 480px; }
+  .waitlist-form {
+    display: flex; gap: 10px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 6px 6px 6px 20px;
+    width: 100%;
+    transition: border-color .2s;
+  }
+  .waitlist-form:focus-within { border-color: rgba(200,255,0,0.4); }
+  .waitlist-form input {
+    background: transparent; border: none; outline: none;
+    color: var(--white); font-family: 'DM Sans', sans-serif;
+    font-size: 15px; flex: 1; min-width: 0;
+  }
+  .waitlist-form input::placeholder { color: rgba(255,255,255,0.3); }
+  .waitlist-form button {
+    background: var(--accent); color: var(--black);
+    border: none; padding: 11px 22px; border-radius: 100px;
+    font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600;
+    cursor: pointer; white-space: nowrap; transition: all .2s; flex-shrink: 0;
+  }
+  .waitlist-form button:hover { background: var(--accent-dim); }
+  .waitlist-form button:active { transform: scale(0.97); }
+  .waitlist-form button:disabled { opacity: 0.6; cursor: not-allowed; }
+  .hero-note { font-size: 12px; color: rgba(255,255,255,0.25); margin-top: 14px; }
+
+  /* SUCCESS */
+  .success-msg {
+    display: none; align-items: center; gap: 10px;
+    background: rgba(200,255,0,0.1);
+    border: 1px solid rgba(200,255,0,0.3);
+    border-radius: 100px; padding: 14px 24px;
+    color: var(--accent); font-size: 14px; font-weight: 500;
+    margin-top: 12px;
+  }
+  .success-msg.show { display: flex; }
+
+  /* ERROR */
+  .error-msg {
+    display: none; align-items: center; gap: 10px;
+    background: rgba(255,80,80,0.1);
+    border: 1px solid rgba(255,80,80,0.3);
+    border-radius: 100px; padding: 14px 24px;
+    color: #ff8080; font-size: 14px; font-weight: 500;
+    margin-top: 12px;
+  }
+  .error-msg.show { display: flex; }
+
+  /* SOCIAL PROOF */
+  .social-proof {
+    display: flex; align-items: center; gap: 14px;
+    margin-top: 44px; flex-wrap: wrap; justify-content: center;
+  }
+  .avatars { display: flex; }
+  .avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    border: 2px solid var(--black); margin-left: -8px;
+    font-size: 11px; font-weight: 600;
+    display: flex; align-items: center; justify-content: center; color: var(--black);
+  }
+  .avatar:first-child { margin-left: 0; }
+  .sp-text { font-size: 13px; color: var(--muted); }
+  .sp-text strong { color: var(--white); }
+
+  .section-divider { border: none; border-top: 1px solid var(--border); margin: 0 48px; }
+
+  /* METRICS */
+  .metrics-section {
+    padding: 80px 48px; text-align: center;
+    border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+    background: rgba(200,255,0,0.02);
+  }
+  .metrics-grid {
+    display: flex; justify-content: center; flex-wrap: wrap;
+    gap: 0; max-width: 900px; margin: 0 auto;
+  }
+  .metric { padding: 40px 52px; border-right: 1px solid var(--border); flex: 1; min-width: 180px; }
+  .metric:last-child { border-right: none; }
+  .metric-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 52px; font-weight: 800;
+    color: var(--accent); letter-spacing: -2px; line-height: 1; margin-bottom: 8px;
+  }
+  .metric-label { font-size: 13px; color: var(--muted); }
+
+  /* HOW IT WORKS */
+  .how-section { padding: 100px 48px; max-width: 1200px; margin: 0 auto; }
+  .section-label {
+    font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 18px; font-weight: 500;
+  }
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(28px, 4vw, 44px);
+    font-weight: 700; letter-spacing: -1px;
+    margin-bottom: 64px; max-width: 500px; line-height: 1.1;
+  }
+  .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 2px; }
+  .step {
+    background: var(--card); border: 1px solid var(--border);
+    padding: 40px 32px; position: relative; transition: background .2s, border-color .2s;
+  }
+  .step:hover { background: rgba(255,255,255,0.07); border-color: rgba(200,255,0,0.2); }
+  .step:first-child { border-radius: var(--radius) 0 0 var(--radius); }
+  .step:last-child  { border-radius: 0 var(--radius) var(--radius) 0; }
+  .step-num {
+    font-family: 'Syne', sans-serif; font-size: 48px; font-weight: 800;
+    color: rgba(200,255,0,0.15); margin-bottom: 20px; line-height: 1; letter-spacing: -2px;
+  }
+  .step h3 { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 600; margin-bottom: 12px; letter-spacing: -0.3px; }
+  .step p { font-size: 14px; color: var(--muted); line-height: 1.7; }
+
+  /* USE CASES */
+  .use-section { padding: 80px 48px; max-width: 1200px; margin: 0 auto; }
+  .use-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; margin-top: 48px; }
+  .use-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 28px; transition: all .2s;
+  }
+  .use-card:hover { background: rgba(255,255,255,0.07); border-color: rgba(200,255,0,0.25); transform: translateY(-2px); }
+  .use-icon {
+    width: 40px; height: 40px; background: rgba(200,255,0,0.1);
+    border-radius: 10px; display: flex; align-items: center; justify-content: center;
+    font-size: 18px; margin-bottom: 18px;
+  }
+  .use-card h4 { font-family: 'Syne', sans-serif; font-size: 17px; font-weight: 600; margin-bottom: 10px; letter-spacing: -0.3px; }
+  .use-card p { font-size: 13px; color: var(--muted); line-height: 1.65; }
+
+  /* FINAL CTA */
+  .cta-section { padding: 120px 48px; text-align: center; max-width: 800px; margin: 0 auto; }
+  .cta-section h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(32px, 5vw, 58px);
+    font-weight: 800; letter-spacing: -1.5px; margin-bottom: 20px; line-height: 1.05;
+  }
+  .cta-section p { color: var(--muted); margin-bottom: 44px; font-size: 17px; font-weight: 300; }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border); padding: 28px 48px;
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;
+  }
+  .footer-logo { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 16px; }
+  .footer-links { display: flex; gap: 24px; }
+  .footer-links a { color: var(--muted); font-size: 13px; text-decoration: none; }
+  .footer-links a:hover { color: var(--white); }
+  .footer-copy { font-size: 12px; color: rgba(255,255,255,0.2); width: 100%; }
+
+  @media (max-width: 640px) {
+    nav { padding: 18px 20px; }
+    .nav-links { display: none; }
+    .hero { padding: 60px 20px 50px; }
+    .how-section, .use-section, .cta-section { padding: 60px 20px; }
+    .metric { padding: 28px 24px; }
+    .metrics-section { padding: 60px 20px; }
+    .step:first-child, .step:last-child { border-radius: 0; }
+    footer { padding: 24px 20px; }
+    .section-divider { margin: 0 20px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo"><span class="logo-dot"></span>Nexus<span style="color:var(--accent)">AI</span></div>
+  <div class="nav-links">
+    <a href="#how">How it works</a>
+    <a href="#use-cases">Use cases</a>
+    <a href="#waitlist">Join waitlist</a>
+  </div>
+  <button class="nav-cta" >Get early access</button>
+</nav>
+
+<section class="hero" id="waitlist">
+  <div class="hero-glow"></div>
+  <div class="badge"><span class="badge-dot"></span> Now accepting early access</div>
+  <h1>Your business runs.<br><em>Nexus</em> handles the rest.</h1>
+  <p class="hero-sub">AI-powered automation that connects your tools, eliminates repetitive work, and lets your team focus on what actually matters.</p>
+
+  <div class="waitlist-wrap">
+    <div class="waitlist-form" id="form1">
+      <input type="email" id="hero-email" placeholder="Enter your work email" autocomplete="email"/>
+      <button id="btn1" onclick="submitWaitlist('hero-email','btn1','success1','error1')">Get early access →</button>
+    </div>
+    <div class="success-msg" id="success1">✓ &nbsp;You're on the list! <a href="nexusai-dashboard.html" style="color:var(--accent);margin-left:8px;font-weight:600;">Open Dashboard →</a></div>
+    <div class="error-msg" id="error1"></div>
+    <p class="hero-note">No credit card required · Free during beta</p>
+  </div>
+
+  <div class="social-proof">
+    <div class="avatars">
+      <div class="avatar" style="background:#7bc8f6">AK</div>
+      <div class="avatar" style="background:#f6c07b">MS</div>
+      <div class="avatar" style="background:#b5f67b">RP</div>
+      <div class="avatar" style="background:#d07bf6">TL</div>
+      <div class="avatar" style="background:#f67b7b">NJ</div>
+    </div>
+    <p class="sp-text"><strong id="counter">2,847</strong> people already on the waitlist</p>
+  </div>
+</section>
+
+<hr class="section-divider"/>
+
+<section class="metrics-section">
+  <div class="metrics-grid">
+    <div class="metric"><div class="metric-num">87%</div><div class="metric-label">Reduction in manual tasks</div></div>
+    <div class="metric"><div class="metric-num">14×</div><div class="metric-label">Faster workflow setup</div></div>
+    <div class="metric"><div class="metric-num">$0</div><div class="metric-label">Engineering resources needed</div></div>
+    <div class="metric"><div class="metric-num">∞</div><div class="metric-label">Integrations available</div></div>
+  </div>
+</section>
+
+<section class="how-section" id="how">
+  <p class="section-label">How it works</p>
+  <h2 class="section-title">Automation that sets itself up</h2>
+  <div class="steps">
+    <div class="step"><div class="step-num">01</div><h3>Connect your stack</h3><p>Link Slack, Notion, HubSpot, Gmail, Jira, and 200+ other tools in under 5 minutes. No code, no config files.</p></div>
+    <div class="step"><div class="step-num">02</div><h3>Describe in plain English</h3><p>Tell Nexus what you want automated. "When a deal closes, update the spreadsheet, notify the team, and create a kick-off doc." Done.</p></div>
+    <div class="step"><div class="step-num">03</div><h3>Review &amp; deploy</h3><p>Nexus generates your workflow, explains every step, and lets you modify before going live. Full transparency, always.</p></div>
+    <div class="step"><div class="step-num">04</div><h3>It learns over time</h3><p>Nexus monitors performance, suggests improvements, and adapts to how your team actually works — not how you described it.</p></div>
+  </div>
+</section>
+
+<hr class="section-divider"/>
+
+<section class="use-section" id="use-cases">
+  <p class="section-label">Use cases</p>
+  <h2 class="section-title">Built for every team</h2>
+  <div class="use-grid">
+    <div class="use-card"><div class="use-icon">📊</div><h4>Sales & RevOps</h4><p>Auto-qualify leads, sync CRM data, trigger follow-up sequences, and generate deal summaries without lifting a finger.</p></div>
+    <div class="use-card"><div class="use-icon">🛠</div><h4>Engineering</h4><p>Turn Slack bug reports into Jira tickets, auto-assign reviewers, summarise PRs, and update stakeholders on deployments.</p></div>
+    <div class="use-card"><div class="use-icon">📣</div><h4>Marketing</h4><p>Repurpose content across channels, schedule campaigns based on engagement data, and report on performance automatically.</p></div>
+    <div class="use-card"><div class="use-icon">🎯</div><h4>Customer Success</h4><p>Detect churn signals early, auto-route support tickets, draft personalised check-ins, and keep onboarding on track.</p></div>
+    <div class="use-card"><div class="use-icon">💼</div><h4>HR & Operations</h4><p>Automate onboarding checklists, schedule interviews, collect feedback, and keep the entire people machine running smoothly.</p></div>
+    <div class="use-card"><div class="use-icon">💰</div><h4>Finance</h4><p>Reconcile invoices, flag anomalies, generate expense reports, and keep budget dashboards updated in real time.</p></div>
+  </div>
+</section>
+
+<section class="cta-section">
+  <h2>The future of work is automated.<br>Get there first.</h2>
+  <p>Join thousands of teams replacing busywork with intelligent automation. Early access spots are limited.</p>
+  <div class="waitlist-wrap" style="margin: 0 auto;">
+    <div class="waitlist-form" id="form2">
+      <input type="email" id="cta-email" placeholder="your@company.com" autocomplete="email"/>
+      <button id="btn2" onclick="submitWaitlist('cta-email','btn2','success2','error2')">Reserve my spot →</button>
+    </div>
+    <div class="success-msg" id="success2">✓ &nbsp;You're on the list! <a href="nexusai-dashboard.html" style="color:var(--accent);margin-left:8px;font-weight:600;">Open Dashboard →</a></div>
+    <div class="error-msg" id="error2"></div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">Nexus<span style="color:var(--accent)">AI</span></div>
+  <div class="footer-links"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Contact</a></div>
+  <p class="footer-copy">© 2025 NexusAI. All rights reserved.</p>
+</footer>
+
+<script>
+  const SUPABASE_URL = 'https://hinseyswsorixddmdcrn.supabase.co/functions/v1/waitlist-signup';
+
+  async function submitWaitlist(emailId, btnId, successId, errorId) {
+    const email = document.getElementById(emailId).value.trim();
+    const btn = document.getElementById(btnId);
+    const successEl = document.getElementById(successId);
+    const errorEl = document.getElementById(errorId);
+
+    // Reset
+    errorEl.classList.remove('show');
+    errorEl.textContent = '';
+
+    // Validate
+    if (!email || !email.includes('@')) {
+      errorEl.textContent = '⚠ Please enter a valid email address.';
+      errorEl.classList.add('show');
+      return;
+    }
+
+    // Loading state
+    btn.disabled = true;
+    btn.textContent = 'Joining...';
+
+    try {
+      const res = await fetch(SUPABASE_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || 'Something went wrong. Please try again.');
+      }
+
+      // Success!
+      document.getElementById(emailId).closest('.waitlist-form').style.display = 'none';
+      successEl.classList.add('show');
+      animateCounter();
+
+    } catch (err) {
+      btn.disabled = false;
+      btn.textContent = emailId === 'hero-email' ? 'Get early access →' : 'Reserve my spot →';
+      errorEl.textContent = '⚠ ' + err.message;
+      errorEl.classList.add('show');
+    }
+  }
+
+  function animateCounter() {
+    const el = document.getElementById('counter');
+    const start = parseInt(el.textContent.replace(/,/g, ''));
+    const target = start + 1;
+    const duration = 800;
+    const startTime = performance.now();
+    function update(now) {
+      const progress = Math.min((now - startTime) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const current = Math.round(start + (target - start) * eased);
+      el.textContent = current.toLocaleString();
+      if (progress < 1) requestAnimationFrame(update);
+    }
+    requestAnimationFrame(update);
+  }
+
+  // Enter key support
+  document.getElementById('hero-email').addEventListener('keydown', e => {
+    if (e.key === 'Enter') submitWaitlist('hero-email','btn1','success1','error1');
+  });
+  document.getElementById('cta-email').addEventListener('keydown', e => {
+    if (e.key === 'Enter') submitWaitlist('cta-email','btn2','success2','error2');
+  });
+</script>
+</body>
+</html>
